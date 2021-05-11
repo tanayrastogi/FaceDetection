@@ -1,5 +1,5 @@
-# faceDetection
-OpenCV module to detect faces in an image using Caffe trained model. 
+# FaceDetection
+OpenCV module to detect faces in an image using **Caffe** trained model. 
 It uses the cv.dnn module to load the trained models. 
 The result is a list of faces on the image with confidence and bounding box. 
 
@@ -10,7 +10,7 @@ Currently tested on,
 ### Usage
 The module needs following files to run in the folder *models/*
 -   Proto File      (.prototxt)
--   Caffee Model    (.caffemodel)
+-   Caffe Model    (.caffemodel)
 
 ### REFERENCE
 - [Face detection with OpenCV and deep learning - PyImageSearch](https://www.pyimagesearch.com/2018/02/26/face-detection-with-opencv-and-deep-learning/)

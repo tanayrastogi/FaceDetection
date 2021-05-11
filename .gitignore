@@ -354,3 +354,6 @@ MigrationBackup/
 
 # Model files
 models/
+
+# Image folder
+test_images/

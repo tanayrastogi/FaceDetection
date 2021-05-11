@@ -1,1 +1,1 @@
-from .detection import FaceDetection
+from .detection import CaffeModel

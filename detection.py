@@ -3,7 +3,12 @@ import numpy as np
 import cv2
 import os
 
-class FaceDetection:
+###################################
+# Face Detection using 
+# RESNET SSD Model 
+# trained using Caffe DL Framework
+####################################
+class CaffeModel:
     def __init__(self, modelpath, protopath, confidence=0.5):
         """
         INPUT
@@ -93,31 +98,38 @@ class FaceDetection:
         return faceDetection
 
 if __name__ == "__main__":
+
+    #########
+    # Image #
+    #########
+    imagePath = "test_images/ivan.jpg"
+    image = cv2.imread(imagePath)
+
+
+    ###########################
+    # Testing for Caffe Model #
+    ###########################
     # MODEL Parameters #
     modelpath = "models/res10_300x300_ssd_iter_140000.caffemodel"
     protopath = "models/deploy_lowres.prototxt.txt"
+    model = CaffeModel(modelpath, protopath, confidence=0.1)
 
-    # Model
-    model = FaceDetection(modelpath, protopath, confidence=0.1)
-
-    # Image
-    imagePath = "fb-17fb02b1b414482eacef639472ac395c.jpg"
-    image = cv2.imread(imagePath)
     # Detections
     faces = model.detect(image, "Test")
 
+    ######################
+    # To show the result #
+    ######################    
     # Plot bounding boxes on image
     color = np.random.uniform(0, 255, size=(1, 3)).flatten()
     for face in faces:
         (startX, startY, endX, endY) = face["bbox"]
         confidence = face["confidence"]
-
         # Rectangle around the objects detected
         cv2.rectangle(image, (startX, startY), (endX, endY), color, 2)
         label = "{:.2f}%".format(confidence)
         y = startY - 15 if startY - 15 > 15 else startY + 15
         cv2.putText(image, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-    
     # show the output image
     import time 
     time.sleep(0.1)
