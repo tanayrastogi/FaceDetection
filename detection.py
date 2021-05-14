@@ -160,10 +160,88 @@ class MTCNN:
                                       "bbox": (startX, startY, endX, endY)})
         return faceDetection
 
+###################################
+# Face Detection using 
+# RetinaFace designed by Insightface project
+# using Tenserflow as backend
+####################################
+class RetinaFace:
+    import cv2
+    def __init__(self, confidence=0.5):
+        """
+        Reference:
+        https://pypi.org/project/retina-face/
+
+        INPUT
+            confidence(float):  Base confidence level to detect faces from the model.
+        """ 
+        # Variables
+        self.BASE_CONFIDENCE = confidence
+        
+        # Load model
+        self.__load_model()
+
+    ## Load Model ##
+    def __load_model(self):
+        # # Loading the model
+        print("[FacD] Setting up the Tensorflow RetinaFace model for face detection ...", end=" ")
+        from retinaface import RetinaFace
+        self.MODEL = RetinaFace
+        print("Done!")
+
+
+    ## Detections ##
+    def detect(self, image, imgName=None, imgShape=None):
+        """
+        INPUT:
+            image(numpy.ndarray)    :Numpy image array with 3-channels 
+            imgName(str)            :Name of the image. Note: Only for printing purposes.
+            imgShape(tuple)         :Start and end coordinate of the image as (startX, startY, endX, endY)
+        """
+        # Return 
+        faceDetection = list()
+        
+        if imgName is not None:
+            print("\n[FacD] Detecting objects in " + str(imgName) + "...")
+        else:
+            print("\n[FacD] Detecting objects ...")
+
+        # detect faces in the image
+        detections = self.MODEL.detect_faces(image)
+        detections = [v for v in detections.values()]
+        for detection in detections:
+            # If confidence level is greater than the base, then extract bbox for the face
+            confidence = detection["score"]
+            
+            if confidence>self.BASE_CONFIDENCE:
+                ret_dict = {"label": "face",
+                            "bbox":detection["facial_area"],
+                            "confidence":detection["score"]}
+                faceDetection.append(ret_dict)
+                
+        #         if imgShape is not None:
+        #             startX = x + imgShape[0]
+        #             startY = y + imgShape[1]
+        #             endX   = startX + width
+        #             endY   = startY + height
+        #         else:
+        #             startX = x
+        #             startY = y
+        #             endX   = startX + width
+        #             endY   = startY + height
+        #         faceDetection.append({"label": "face",
+        #                               "confidence": detection["confidence"],
+        #                               "bbox": (startX, startY, endX, endY)})
+
+        return faceDetection
+
+
+
 if __name__ == "__main__":
     import cv2  
     import numpy as np
     import imutils 
+    import time 
 
     #########
     # Image #
@@ -190,21 +268,33 @@ if __name__ == "__main__":
     # Detections
     faces = model.detect(image, "Test")
 
+    ################################
+    # Testing for RetinaFace Model #
+    ################################
+    # model = RetinaFace(confidence=0.1)
+
+    # # Detections
+    # faces = model.detect(image, "Test")
+
+    
     ######################
     # To show the result #
     ######################    
     # Plot bounding boxes on image
-    color = np.random.uniform(0, 255, size=(1, 3)).flatten()
     for face in faces:
         (startX, startY, endX, endY) = face["bbox"]
         confidence = face["confidence"]
         # Rectangle around the objects detected
-        cv2.rectangle(image, (startX, startY), (endX, endY), color, 2)
+        cv2.rectangle(image, (startX, startY), (endX, endY), (0, 0, 255), 2)
         label = "{:.2f}".format(confidence)
         y = startY - 15 if startY - 15 > 15 else startY + 15
         cv2.putText(image, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+    (height, width, channel) = image.shape
+    text = "Number of faces: {}".format(len(faces))
+    cv2.putText(image, text, (10, height - 20),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     # show the output image
-    import time 
     time.sleep(0.1)
     cv2.imshow("Output", imutils.resize(image, width=1280))
     cv2.waitKey(0)
