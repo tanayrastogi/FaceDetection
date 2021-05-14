@@ -98,6 +98,7 @@ class CaffeModel:
 # using Tenserflow as backend
 ####################################
 class MTCNN:
+    import cv2
     def __init__(self, confidence=0.5):
         """
         Reference:
@@ -137,7 +138,7 @@ class MTCNN:
             print("\n[FacD] Detecting objects ...")
 
         # detect faces in the image
-        detections = self.MODEL.detect_faces(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        detections = self.MODEL.detect_faces(self.cv2.cvtColor(image, self.cv2.COLOR_BGR2RGB))
         for detection in detections:
             # If confidence level is greater than the base, then extract bbox for the face
             confidence = detection["confidence"]
