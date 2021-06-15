@@ -4,9 +4,9 @@ The result is a list of faces on the image with confidence and bounding box.
 
 # Models
 Currently tested on,
-    - SSD RESNET [res10_300x300_ssd_iter_140000] trained on Caffe network.
-    - Multi-Task Cascaded Convolutional Neural Network (MTCNN) model with Tenorflow backend.
-    - RetinaNet with Tensorflow backend.
+- SSD RESNET [res10_300x300_ssd_iter_140000] trained on Caffe network.
+- Multi-Task Cascaded Convolutional Neural Network (MTCNN) model with Tenorflow backend.
+- RetinaNet with Tensorflow backend.
 
 ### Usage
 The module needs following files to run in the folder *models/* to run the Caffee net.
